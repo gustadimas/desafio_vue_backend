@@ -116,6 +116,11 @@ body {
   cursor: not-allowed;
 }
 
+.btn-disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 .btn-primary {
   background: #2563eb;
   color: #fff;
@@ -150,4 +155,9 @@ body {
 .feedback.erro {
   background: #fef2f2;
   color: #b91c1c;
+}
+
+.feedback.sucesso {
+  background: #ecfdf5;
+  color: #047857;
 }

@@ -2,22 +2,22 @@
   <form class="form-card" @submit.prevent="handleSubmit">
     <div class="field">
       <label for="nome">Nome</label>
-      <input id="nome" v-model.trim="form.nome" type="text" />
+      <input id="nome" v-model.trim="form.nome" type="text" required maxlength="120" />
     </div>
 
     <div class="field">
       <label for="email">E-mail</label>
-      <input id="email" v-model.trim="form.email" type="email" />
+      <input id="email" v-model.trim="form.email" type="email" required maxlength="120" />
     </div>
 
     <div class="field">
       <label for="idade">Idade</label>
-      <input id="idade" v-model.number="form.idade" type="number" min="16" />
+      <input id="idade" v-model.number="form.idade" type="number" min="16" required />
     </div>
 
     <div class="field">
       <label for="curso">Curso</label>
-      <input id="curso" v-model.trim="form.curso" type="text" />
+      <input id="curso" v-model.trim="form.curso" type="text" required maxlength="120" />
     </div>
 
     <p v-if="erroLocal" class="feedback erro">{{ erroLocal }}</p>
@@ -49,6 +49,7 @@ const emit = defineEmits<{
 }>()
 
 const erroLocal = ref('')
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const form = reactive<CreateAlunoDto>({
   nome: '',
@@ -72,13 +73,23 @@ watch(
 function handleSubmit() {
   erroLocal.value = ''
 
-  if (!form.nome || !form.email || !form.curso) {
-    erroLocal.value = 'Preencha nome, e-mail e curso.'
+  if (!form.nome || !form.email || !form.curso || form.idade === null || form.idade === undefined) {
+    erroLocal.value = 'Preencha nome, e-mail, idade e curso.'
+    return
+  }
+
+  if (!EMAIL_REGEX.test(form.email)) {
+    erroLocal.value = 'Informe um e-mail válido.'
+    return
+  }
+
+  if (form.nome.length > 120 || form.email.length > 120 || form.curso.length > 120) {
+    erroLocal.value = 'Os campos de texto devem ter no máximo 120 caracteres.'
     return
   }
 
   if (form.idade < 16) {
-    erroLocal.value = 'A idade minima e 16 anos.'
+    erroLocal.value = 'A idade mínima é 16 anos.'
     return
   }
 
