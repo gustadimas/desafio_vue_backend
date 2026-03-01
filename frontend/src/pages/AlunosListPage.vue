@@ -2,9 +2,12 @@
   <section>
     <div class="page-header">
       <h2>Alunos</h2>
-      <RouterLink class="btn btn-primary" to="/alunos/novo">Novo aluno</RouterLink>
+      <RouterLink class="btn btn-primary" :class="{ 'btn-disabled': store.salvando }" to="/alunos/novo">
+        Novo aluno
+      </RouterLink>
     </div>
 
+    <p v-if="store.sucesso" class="feedback sucesso">{{ store.sucesso }}</p>
     <p v-if="store.erro" class="feedback erro">{{ store.erro }}</p>
     <p v-if="store.carregandoLista" class="feedback info">Carregando alunos...</p>
 
@@ -17,7 +20,7 @@
             <th>E-mail</th>
             <th>Idade</th>
             <th>Curso</th>
-            <th>Acoes</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -28,7 +31,11 @@
             <td>{{ aluno.idade }}</td>
             <td>{{ aluno.curso }}</td>
             <td class="actions">
-              <RouterLink class="btn btn-secondary btn-sm" :to="`/alunos/${aluno.id}/editar`">
+              <RouterLink
+                class="btn btn-secondary btn-sm"
+                :class="{ 'btn-disabled': store.salvando }"
+                :to="`/alunos/${aluno.id}/editar`"
+              >
                 Editar
               </RouterLink>
               <button class="btn btn-danger btn-sm" :disabled="store.salvando" @click="confirmarExclusao(aluno.id)">

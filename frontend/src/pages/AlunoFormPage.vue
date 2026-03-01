@@ -2,6 +2,7 @@
   <section>
     <h2>{{ tituloPagina }}</h2>
 
+    <p v-if="store.sucesso" class="feedback sucesso">{{ store.sucesso }}</p>
     <p v-if="store.erro" class="feedback erro">{{ store.erro }}</p>
     <p v-if="carregandoPagina" class="feedback info">Carregando...</p>
 
@@ -34,12 +35,12 @@ const textoBotao = computed(() => (modoEdicao.value ? 'Atualizar' : 'Salvar'))
 const carregandoPagina = computed(() => modoEdicao.value && store.carregandoItem)
 
 onMounted(async () => {
-  store.limparErro()
+  store.limparMensagens()
   store.selecionado = null
 
   if (modoEdicao.value) {
     if (!Number.isFinite(idParam.value)) {
-      store.erro = 'ID invalido para edicao.'
+      store.definirErro('ID inválido para edição.')
       return
     }
     await store.carregarAluno(idParam.value)

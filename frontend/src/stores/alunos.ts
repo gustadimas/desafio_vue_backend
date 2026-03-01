@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 import {
   atualizar,
@@ -10,27 +9,7 @@ import {
   type CreateAlunoDto,
   type UpdateAlunoDto,
 } from '../api/alunos'
-
-function getMensagemErro(error: unknown): string {
-  if (axios.isAxiosError(error)) {
-    const data = error.response?.data as { message?: string | string[] } | undefined
-    if (Array.isArray(data?.message)) {
-      return data.message.join(', ')
-    }
-    if (typeof data?.message === 'string' && data.message.length > 0) {
-      return data.message
-    }
-    if (typeof error.message === 'string' && error.message.length > 0) {
-      return error.message
-    }
-  }
-
-  if (error instanceof Error && error.message.length > 0) {
-    return error.message
-  }
-
-  return 'Ocorreu um erro inesperado.'
-}
+import { getApiErrorMessage } from '../api/errors'
 
 export const useAlunosStore = defineStore('alunos', {
   state: () => ({
@@ -40,9 +19,19 @@ export const useAlunosStore = defineStore('alunos', {
     carregandoItem: false,
     salvando: false,
     erro: '',
+    sucesso: '',
   }),
   actions: {
-    limparErro() {
+    limparMensagens() {
+      this.erro = ''
+      this.sucesso = ''
+    },
+    definirErro(mensagem: string) {
+      this.erro = mensagem
+      this.sucesso = ''
+    },
+    definirSucesso(mensagem: string) {
+      this.sucesso = mensagem
       this.erro = ''
     },
     async carregarLista() {
@@ -51,7 +40,7 @@ export const useAlunosStore = defineStore('alunos', {
       try {
         this.lista = await listar()
       } catch (error) {
-        this.erro = getMensagemErro(error)
+        this.definirErro(getApiErrorMessage(error))
       } finally {
         this.carregandoLista = false
       }
@@ -62,7 +51,7 @@ export const useAlunosStore = defineStore('alunos', {
       try {
         this.selecionado = await buscar(id)
       } catch (error) {
-        this.erro = getMensagemErro(error)
+        this.definirErro(getApiErrorMessage(error))
         this.selecionado = null
       } finally {
         this.carregandoItem = false
@@ -73,9 +62,10 @@ export const useAlunosStore = defineStore('alunos', {
       this.erro = ''
       try {
         const aluno = await criar(payload)
+        this.definirSucesso('Aluno criado com sucesso.')
         return aluno
       } catch (error) {
-        this.erro = getMensagemErro(error)
+        this.definirErro(getApiErrorMessage(error))
         return null
       } finally {
         this.salvando = false
@@ -86,9 +76,10 @@ export const useAlunosStore = defineStore('alunos', {
       this.erro = ''
       try {
         const aluno = await atualizar(id, payload)
+        this.definirSucesso('Aluno atualizado com sucesso.')
         return aluno
       } catch (error) {
-        this.erro = getMensagemErro(error)
+        this.definirErro(getApiErrorMessage(error))
         return null
       } finally {
         this.salvando = false
@@ -100,9 +91,10 @@ export const useAlunosStore = defineStore('alunos', {
       try {
         await remover(id)
         this.lista = this.lista.filter((aluno) => aluno.id !== id)
+        this.definirSucesso('Aluno removido com sucesso.')
         return true
       } catch (error) {
-        this.erro = getMensagemErro(error)
+        this.definirErro(getApiErrorMessage(error))
         return false
       } finally {
         this.salvando = false
