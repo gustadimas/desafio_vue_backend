@@ -1,12 +1,11 @@
 import { http } from './http'
 import type { components } from './generated/schema'
 
-type CreateAlunoDto = components['schemas']['CreateAlunoDto']
-type UpdateAlunoDto = components['schemas']['UpdateAlunoDto']
-type Aluno = CreateAlunoDto & { id: number }
+export type CreateAlunoDto = components['schemas']['CreateAlunoDto']
+export type UpdateAlunoDto = components['schemas']['UpdateAlunoDto']
+export type Aluno = CreateAlunoDto & { id: number }
 
 const recurso = '/aluno'
-
 export async function listar(): Promise<Aluno[]> {
   const { data } = await http.get<Aluno[]>(recurso)
   return data

@@ -1,15 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '../pages/HomePage.vue'
+import AlunoFormPage from '../pages/AlunoFormPage.vue'
+import AlunosListPage from '../pages/AlunosListPage.vue'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomePage,
+      redirect: '/alunos',
+    },
+    {
+      path: '/alunos',
+      name: 'alunos-lista',
+      component: AlunosListPage,
+    },
+    {
+      path: '/alunos/novo',
+      name: 'alunos-novo',
+      component: AlunoFormPage,
+    },
+    {
+      path: '/alunos/:id/editar',
+      name: 'alunos-editar',
+      component: AlunoFormPage,
     },
   ],
 })
-
 export default router

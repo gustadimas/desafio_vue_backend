@@ -1,5 +1,14 @@
 <template>
   <header class="app-header">
-    <h1>Desafio Vue Frontend</h1>
+    <div class="app-header-content">
+      <h1>CRUD de Alunos</h1>
+      <nav>
+        <RouterLink class="header-link" to="/alunos">Alunos</RouterLink>
+      </nav>
+    </div>
   </header>
 </template>
+
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+</script>
